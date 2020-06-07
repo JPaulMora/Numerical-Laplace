@@ -1,1 +1,10 @@
 venv
+__pycache__
+.vscode
+*.pyc
+*.synctex.gz
+*.pdf
+*.aux
+*.fdb_latexmk
+*.log
+*.fls
