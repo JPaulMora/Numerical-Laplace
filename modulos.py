@@ -3,7 +3,7 @@ from matplotlib import cm
 import numpy as np
 
 
-def iterateMatrix(field, max = 500, step = 1):
+def iterate_matrix(field, max = 500, step = 1):
   # Iteration (We assume that the iteration is convergence in maxIter = 500)
   
   for _ in range(0, max):
@@ -12,14 +12,17 @@ def iterateMatrix(field, max = 500, step = 1):
               field[i, j] = 0.25 * (field[i+1][j] + field[i-1][j] + field[i][j+1] + field[i][j-1])
 
 
-def plot_heatmap(X,Y,Field):
-    colorinterpolation = 100
-    colourMap = plt.cm.jet
+def plot_heatmap(x,y,field):
+    """Creates 3D plot with colored levels
+    :param x: array from zero to field's max coordinate
+    :param y: array from zero to field's max coordinate
+    :param field: 2D matrix for the values of Z
+    """
     # # Configure the contour
     plt.title("x(0) = 0; x(a)=arctan(y/a)")
     plt.xlabel("X");
     plt.ylabel("Y")
-    plt.contourf(X, Y, Field, colorinterpolation, cmap=colourMap)
+    plt.contourf(x,y,field, 100, cmap=plt.cm.jet)
 
     # # Set Colorbar
     plt.colorbar()
@@ -30,28 +33,17 @@ def plot_heatmap(X,Y,Field):
 
 
 
-def plot_3D(x, y, p):
-    '''Creates 3D plot with appropriate limits and viewing angle
-
-    Parameters:
-    ----------
-    x: array of float
-        nodal coordinates in x
-    y: array of float
-        nodal coordinates in y
-    p: 2D array of float
-        calculated potential field
-
-    '''
-    fig = plt.figure(dpi=100)
+def plot_3d_heatmap(x,y,field):
+    """Creates 3D plot with colored levels
+    :param x: array from zero to field's max coordinate
+    :param y: array from zero to field's max coordinate
+    :param field: 2D matrix for the values of Z
+    """
+    fig = plt.figure()
     ax = fig.gca(projection='3d')
-    X,Y = np.meshgrid(x,y)
-    surf = ax.plot_surface(X,Y,p[:], rstride=1, cstride=1, cmap=cm.viridis,
-            linewidth=0, antialiased=False)
+    surf = ax.plot_surface(x,y,field, cmap=plt.cm.jet, linewidth=0, antialiased=True)
 
-    ax.set_xlim(0,1)
-    ax.set_ylim(0,1)
-    ax.set_xlabel('$x$')
-    ax.set_ylabel('$y$')
-    ax.set_zlabel('$z$')
-    ax.view_init(30,45)
+    # Color bar
+    fig.colorbar(surf, shrink=0.5, aspect=5)
+
+    plt.show()

@@ -11,8 +11,8 @@ from modulos import *
 # x = 0 y x = a se encuentran a potenciales g(y) y h(y) respectivamente.
 
 # Matplotlib configurations
-n = 200
-square = 100
+square = 35
+n = 0
 
 X, Y = np.meshgrid(np.arange(0, square), np.arange(0, square))
 x = np.linspace(0,1,square)
@@ -24,12 +24,7 @@ T = np.zeros((square,square))
 # Set Boundary condition
 T[-1,:] = np.arctan(y/y[-1])
 
-# iterateMatrix(T, n)
+iterate_matrix(T, n)
 
 # plot_heatmap(X,Y,T)
-
-fig = plt.figure()
-ax = fig.gca(projection='3d')
-surf = ax.plot_surface(X, Y, T, cmap=cm.coolwarm, linewidth=0, antialiased=False)
-
-plt.show()
+plot_3d_heatmap(X,Y,T)
