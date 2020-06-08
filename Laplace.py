@@ -33,6 +33,10 @@ T.fill(0)
 # plano X = b es 0 
 T[:,-1] = np.arctan(y/y[-1])
 
+
+# T[:,-1] = 2*y**3+5
+# T[:,0] = 2*y**3+5
+
 name = "arctan"
 title = "h(y) = arctan(y/a)"
 
@@ -42,7 +46,8 @@ for n in [0,2,5,10,20]:
 
   if n is 20:
     plot_electric_field(x,y,out, name)
-    lap = - ndimage.laplace(out)
+    lap = -10* ndimage.laplace(out)
     title = "densidad de carga " + title
-    plot_3d_heatmap(X,Y,lap, name+"-density", 0, title)
+    plot_heatmap(X,Y,lap,name,title)
+    # plot_3d_heatmap(X,Y,lap, name+"-density", 0, title)
 
