@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from modulos import *
+from scipy import ndimage
 
 # Coordenadas Rectangulares
 
@@ -11,20 +12,37 @@ from modulos import *
 # x = 0 y x = a se encuentran a potenciales g(y) y h(y) respectivamente.
 
 # Matplotlib configurations
-square = 35
+square = 70
 
 X, Y = np.meshgrid(np.arange(0, square), np.arange(0, square))
 x = np.linspace(0,1,square)
 y = np.linspace(0,1,square)
 
 # Set initial values to zero in all cells
-T = np.zeros((square,square))
+# T = np.zeros((square,square))
+T = np.empty((square,square))
+T.fill(0)
 
 # Set Boundary condition ":" means all items, -1 means last item
 # T[:,-1] translates to "all items on last row"
+
+# plano Y = b es 0 
+# T[-1,:] = 0
+# plano Y = 0 es 0
+# T[0,:] = 0
+# plano X = b es 0 
 T[:,-1] = np.arctan(y/y[-1])
+
+name = "arctan"
+title = "h(y) = arctan(y/a)"
 
 for n in [0,2,5,10,20]:
   out = iterate_matrix(T, n)
-  plot_3d_heatmap(X,Y,out)
+  plot_3d_heatmap(X,Y,out, name, n, title)
+
+  if n is 20:
+    plot_electric_field(x,y,out, name)
+    lap = - ndimage.laplace(out)
+    title = "densidad de carga " + title
+    plot_3d_heatmap(X,Y,lap, name+"-density", 0, title)
 

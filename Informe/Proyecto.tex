@@ -121,7 +121,7 @@
 % IEEEtran.cls V1.7 and later.
 
 
-
+\usepackage{listings}
 
 
 % *** GRAPHICS RELATED PACKAGES ***
@@ -129,7 +129,7 @@
 \ifCLASSINFOpdf
   \usepackage[pdftex]{graphicx}
   % declare the path(s) where your graphic files are
-  \graphicspath{./images/}
+  \graphicspath{images/}
   % and their extensions so you won't have to specify these with
   % every instance of \includegraphics
   \DeclareGraphicsExtensions{.png}
@@ -554,6 +554,73 @@ Determine el potencial eléctrico dentro dentro de la tubería bajo las siguient
 \(g(y) = 0, h(y) = tan^{-1}(y/a)\)
 \\
 
+\subsubsection{Condiciones iniciales del problema}
+
+Para empezar, escogemos un valor arbitrario para a y b, por simplicidad usamos \(a = b = 35 \)
+y configuramos \(h(y) = tan^{-1}(y/a) \quad 0\leq y \leq a \)
+el resultado del potencial y el campo vectorial en \(n = 20\) se puede ver en la grafica \ref{arctan-n20}
+y las gráficas de menores iteraciones incluyendo las condiciones iniciales y la densidad de carga
+se encuentran en la figura \ref{arctan-iterations}.
+Para configurar las condiciones iniciales en el código utilizamos
+\begin{lstlisting}
+  T[:,-1] = np.arctan(y/y[-1])
+\end{lstlisting}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=2.8in]{images/arctan-n20}
+  \includegraphics[width=2.8in]{images/arctan-field}
+  \caption{Configuración de las condiciones de frontera \(h(y) = tan^{-1}(y/a)\)}
+  \label{arctan-n20}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=1.5in]{images/arctan-n0}
+  \includegraphics[width=1.5in]{images/arctan-n2}
+  \includegraphics[width=1.5in]{images/arctan-n5}
+  \includegraphics[width=1.5in]{images/arctan-n10}
+  \includegraphics[width=1.5in]{images/arctan-density-n0}
+  \caption{\(h(y) = tan^{-1}(y/a)\) con iteraciones \(n = 0, 2, 5 \text{ y } 10\)}
+  \label{arctan-iterations}
+\end{figure}
+\pagebreak
+
+\subsubsection{Cambio de condiciones}
+
+Si el plano \(x=0\) se corre a \(x=-b\), y se tiene
+\\
+\(g(y)=h(y)=2y^3+5\) 
+\\\\
+Para este inciso se necesitan dos condiciones de frontera distintas de cero y valores en el plano negativo.
+Gracias a que función de condicion de frontera es independiente de \(x\) simplemente duplicaremos el tamaño del
+espacio en ese eje, es decir las condiciones iniciales se presentarán en \(x=0, x=2b\).
+En el código las configuramos de esta forma
+
+\begin{lstlisting}
+  T[:,-1] = 2*y**3+5
+  T[:,0] = 2*y**3+5
+\end{lstlisting}
+
+Así como el ejercicio anterior, presentamos el mapa de calor de la iteración \(n=20\) en la figura \ref{2y3-n20} seguido de 
+las iteraciones menores y condiciones iniciales (figura \ref{2y3-iterations}).
+
+\begin{figure}
+  \centering
+  \includegraphics[width=2.8in]{images/2y3-n20}
+  \caption{Configuración de las condiciones de frontera \(h(y) = tan^{-1}(y/a)\)}
+  \label{2y3-n20}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=1.5in]{images/2y3-n0}
+  \includegraphics[width=1.5in]{images/2y3-n2}
+  \includegraphics[width=1.5in]{images/2y3-n5}
+  \includegraphics[width=1.5in]{images/2y3-n10}
+  \caption{\(h(y) = tan^{-1}(y/a)\) con iteraciones \(n = 0, 2, 5 \text{ y } 10\)}
+  \label{2y3-iterations}
+\end{figure}
 
 
 % An example of a floating figure using the graphicx package.
@@ -569,15 +636,6 @@ Determine el potencial eléctrico dentro dentro de la tubería bajo las siguient
 % option should be used if it is desired that the figures are to be
 % displayed while in draft mode.
 %
-%\begin{figure}[!t]
-%\centering
-%\includegraphics[width=2.5in]{myfigure}
-% where an .eps filename suffix will be assumed under latex, 
-% and a .pdf suffix will be assumed for pdflatex; or what has been declared
-% via \DeclareGraphicsExtensions.
-%\caption{Simulation results for the network.}
-%\label{fig_sim}
-%\end{figure}
 
 % Note that the IEEE typically puts floats only at the top, even when this
 % results in a large percentage of a column being occupied by floats.
