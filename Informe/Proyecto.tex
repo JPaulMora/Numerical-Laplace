@@ -529,7 +529,7 @@ IEEE, IEEEtran, journal, \LaTeX, paper, Laplace equations.
 % Here we have the typical use of a "T" for an initial drop letter
 % and "HIS" in caps to complete the first word.
 \IEEEPARstart{E}{l} objetivo de este articulo es demostrar el comportamiento
-de potenciales electricos resolviendo la Ecuación de Laplace con condiciones de
+de potenciales eléctricos resolviendo la Ecuación de Laplace con condiciones de
 frontera de Dirichlet.
 \\\\
 El documento consiste en los ejercicios asignados y su respectiva solución,
@@ -570,7 +570,7 @@ Para configurar las condiciones iniciales en el código utilizamos
   \centering
   \includegraphics[width=2.8in]{images/arctan-n20}
   \includegraphics[width=2.8in]{images/arctan-field}
-  \caption{Configuración de las condiciones de frontera \(h(y) = tan^{-1}(y/a)\)}
+  \caption{Potencial y campo eléctrico para \(h(y) = tan^{-1}(y/a)\)}
   \label{arctan-n20}
 \end{figure}
 
@@ -602,13 +602,14 @@ En el código las configuramos de esta forma
   T[:,0] = 2*y**3+5
 \end{lstlisting}
 
-Así como el ejercicio anterior, presentamos el mapa de calor de la iteración \(n=20\) en la figura \ref{2y3-n20} seguido de 
-las iteraciones menores y condiciones iniciales (figura \ref{2y3-iterations}).
+Así como el ejercicio anterior, presentamos el mapa de calor y el campo eléctrico de la iteración \(n=20\) en la figura \ref{2y3-n20} seguido de 
+las iteraciones menores, densidad y condiciones iniciales (figura \ref{2y3-iterations}).
 
 \begin{figure}
   \centering
   \includegraphics[width=2.8in]{images/2y3-n20}
-  \caption{Configuración de las condiciones de frontera \(h(y) = tan^{-1}(y/a)\)}
+  \includegraphics[width=2.8in]{images/2y3-field}
+  \caption{Potencial y campo eléctrico para \(h(y) = g(y) = 2y^3+5\)}
   \label{2y3-n20}
 \end{figure}
 
@@ -618,7 +619,8 @@ las iteraciones menores y condiciones iniciales (figura \ref{2y3-iterations}).
   \includegraphics[width=1.5in]{images/2y3-n2}
   \includegraphics[width=1.5in]{images/2y3-n5}
   \includegraphics[width=1.5in]{images/2y3-n10}
-  \caption{\(h(y) = tan^{-1}(y/a)\) con iteraciones \(n = 0, 2, 5 \text{ y } 10\)}
+  \includegraphics[width=1.5in]{images/2y3-density-n0}
+  \caption{\(h(y) = g(y) = 2y^3+5\) con iteraciones \(n = 0, 2, 5 \text{ y } 10\)}
   \label{2y3-iterations}
 \end{figure}
 
