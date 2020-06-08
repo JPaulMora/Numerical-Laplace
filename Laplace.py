@@ -12,7 +12,6 @@ from modulos import *
 
 # Matplotlib configurations
 square = 35
-n = 0
 
 X, Y = np.meshgrid(np.arange(0, square), np.arange(0, square))
 x = np.linspace(0,1,square)
@@ -21,10 +20,11 @@ y = np.linspace(0,1,square)
 # Set initial values to zero in all cells
 T = np.zeros((square,square))
 
-# Set Boundary condition
-T[-1,:] = np.arctan(y/y[-1])
+# Set Boundary condition ":" means all items, -1 means last item
+# T[:,-1] translates to "all items on last row"
+T[:,-1] = np.arctan(y/y[-1])
 
-iterate_matrix(T, n)
+for n in [0,2,5,10,20]:
+  out = iterate_matrix(T, n)
+  plot_3d_heatmap(X,Y,out)
 
-# plot_heatmap(X,Y,T)
-plot_3d_heatmap(X,Y,T)
