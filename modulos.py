@@ -1,4 +1,4 @@
-from matplotlib import pyplot
+import matplotlib.pyplot as plt
 from matplotlib import cm
 import numpy as np
 
@@ -11,13 +11,24 @@ def iterateMatrix(field, max = 500, step = 1):
           for j in range(1, len(field[0])-1, step):
               field[i, j] = 0.25 * (field[i+1][j] + field[i-1][j] + field[i][j+1] + field[i][j-1])
 
-def p_analytical(x, y):
-    X, Y = np.meshgrid(x,y)
 
-    p_an = np.sinh(1.5*np.pi*Y / x[-1]) /\
-    (np.sinh(1.5*np.pi*y[-1]/x[-1]))*np.sin(1.5*np.pi*X/x[-1])
+def plot_heatmap(X,Y,Field):
+    colorinterpolation = 100
+    colourMap = plt.cm.jet
+    # # Configure the contour
+    plt.title("x(0) = 0; x(a)=arctan(y/a)")
+    plt.xlabel("X");
+    plt.ylabel("Y")
+    plt.contourf(X, Y, Field, colorinterpolation, cmap=colourMap)
 
-    return p_an
+    # # Set Colorbar
+    plt.colorbar()
+
+    # # Show
+    plt.show()
+
+
+
 
 def plot_3D(x, y, p):
     '''Creates 3D plot with appropriate limits and viewing angle
@@ -32,7 +43,7 @@ def plot_3D(x, y, p):
         calculated potential field
 
     '''
-    fig = pyplot.figure(dpi=100)
+    fig = plt.figure(dpi=100)
     ax = fig.gca(projection='3d')
     X,Y = np.meshgrid(x,y)
     surf = ax.plot_surface(X,Y,p[:], rstride=1, cstride=1, cmap=cm.viridis,

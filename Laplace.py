@@ -11,55 +11,25 @@ from modulos import *
 # x = 0 y x = a se encuentran a potenciales g(y) y h(y) respectivamente.
 
 # Matplotlib configurations
-colorinterpolation = 100
-colourMap = plt.cm.jet
+n = 200
+square = 100
 
-
-n = 1
-a = 50
-b = 50
-
-X, Y = np.meshgrid(np.arange(0, b), np.arange(0, a))
+X, Y = np.meshgrid(np.arange(0, square), np.arange(0, square))
+x = np.linspace(0,1,square)
+y = np.linspace(0,1,square)
 
 # Set initial values to zero in all cells
-T = np.empty((a, b))
-T.fill(0)
+T = np.zeros((square,square))
 
 # Set Boundary condition
-
-# Y = b
-T[(b-1):, :] = 0
-# Y = 0
-T[:1, :] = 0
-
-# X = a
-# T[:, (a-1):] = 0
-# X = 0
-# T[:, :1] = 0
-
-for i in range(a):
-  T[:, (a-1):][i] = np.arctan(i/a)
-
-nx = 41
-ny = 41
-
-x = np.linspace(0,1,nx)
-y = np.linspace(0,1,ny)
-
-p_an = p_analytical(x,y)
-
-plot_3D(a,b,p_an)
+T[-1,:] = np.arctan(y/y[-1])
 
 # iterateMatrix(T, n)
 
-# # Configure the contour
-# plt.title("x(0) = 0; x(a)=arctan(y/a)")
-# plt.xlabel("X");
-# plt.ylabel("Y")
-# plt.contourf(X, Y, T, colorinterpolation, cmap=colourMap)
+# plot_heatmap(X,Y,T)
 
-# # Set Colorbar
-# plt.colorbar()
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+surf = ax.plot_surface(X, Y, T, cmap=cm.coolwarm, linewidth=0, antialiased=False)
 
-# # Show
-# plt.show()
+plt.show()
