@@ -75,7 +75,7 @@ def plot_4d_heatmap(x,y,field,name,n,title=""):
 
     fig = plt.figure()
     ax = fig.gca(projection='3d')
-    ax.view_init(elev=40, azim=-130)
+    ax.view_init(elev=40, azim=-40)
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')

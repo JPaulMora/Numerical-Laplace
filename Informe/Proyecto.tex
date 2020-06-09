@@ -142,13 +142,14 @@ frontera de Dirichlet.
 \\\\
 El documento consiste en los ejercicios asignados y su respectiva solución,
 la cual será mostrada como un grafico en 3D o un mapa de calor en 2D el cual se
-calcula utilizando el método de Jacobi para obtener una aproximación numérica del resultado.
+calcula utilizando el método analítico y el "truco de Fourier" para la resolución
+de ecuaciónes diferenciales parciales.
 \\\\
-Ver apéndice A sobre la razón de utilizar este metodo y sobre las formas alternativas con 
-las que se puede calular la misma solución.
+Adicionalmente en el apéndice A se escribe sobre el método de resolución y sobre 
+las formas alternativas con las que se puede calular la misma solución.
 \hfill mds
  
-\hfill Mayo 26, 2020
+\hfill Junio 7, 2020
 
 \subsection{Ecuación de Laplace en coordenadas rectangulares}
 
@@ -249,12 +250,53 @@ las iteraciones menores, densidad y condiciones iniciales (figura \ref{2y3-itera
   \label{2y3-iterations}
 \end{figure}
 
+/subsubsection{Problema de Laplace en 3D}
+
+Una tubería se extiende a lo largo del eje z
+y posee paredes en \(x = y = z=0,x=a y=b\). La placa en \(z=0\) se encuentra a potencial
+\(f(x,y) = xy^2\), y las demás están aterrizadas.
+Elija valores de a y b de tal manera que las gráficas puedan apreciarse correctamente.
+Realice las gráficas para \(n= 2, 5, 10, 20\)
+
+Para poder graficar correctamente este ejercicio, utilizaremos la misma función de antes para
+generar mapas de calor en 3D, pero en este caso agregaremos distintos nuevos para valores de z.
+
+Utilizando matplotlib, es facil agregar planos utilizando:
+
+\begin{lstlisting}
+  # agregamos alpha para poder ver todos los planos
+  ax.plot_surface(x,y,field[z]+z, alpha=0.3)
+\end{lstlisting}
+
+El otro cambio que debemos hacer es adaptar la función de relajación para funcionar en un campo 3D.
+Basta con agregar:
+\begin{lstlisting}
+  # La funcion se queda igual excepto por agregar terminos de K
+  field[i, j, k] = 1/6 * (field[i+1][j][k] ... field[i][j][k+1] + field[i][j][k-1])
+\end{lstlisting}
+
+Finalmente iteramos la nueva función con los arreglos y obtenemos un excelente resultado mostrado en 
+figura \ref{xy2-n20}, como siempre, las iteraciones menores a menor detalle en \ref{xy2-iterations}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=2.8in]{images/xy2-n20}
+  \caption{Potencial y campo eléctrico para \(f(x,y) = xy^2\)}
+  \label{xy2-n20}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=1.5in]{images/xy2-n0}
+  \includegraphics[width=1.5in]{images/xy2-n2}
+  \includegraphics[width=1.5in]{images/xy2-n5}
+  \includegraphics[width=1.5in]{images/xy2-n10}
+  \caption{\(h(y) = g(y) = 2y^3+5\) con iteraciones \(n = 0, 2, 5 \text{ y } 10\)}
+  \label{xy2-iterations}
+\end{figure}
 
 
-
-
-
-
+\subsection{Ecuación de Laplace en coordenadas esféricas}
 
 
 
