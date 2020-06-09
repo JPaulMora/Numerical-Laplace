@@ -18,6 +18,7 @@
 \fi
 
 \usepackage{listings}
+\usepackage{cancel}
 
 
 \usepackage[pdftex]{graphicx}
@@ -170,6 +171,32 @@ y configuramos \(h(y) = tan^{-1}(y/a) \quad 0\leq y \leq a \)
 el resultado del potencial y el campo vectorial en \(n = 20\) se puede ver en la grafica \ref{arctan-n20}
 y las gráficas de menores iteraciones incluyendo las condiciones iniciales y la densidad de carga
 se encuentran en la figura \ref{arctan-iterations}.
+
+\subsubsection{Solución analítica}
+
+La solución general de la Ecuación de Laplace es \(V(x,y)=(Ae^{kx}+B^{-kx})(C sin(ky) + D cos(ky))\)
+Al utilizar las condiciones de frontera mencionadas antes podemos resolver
+\begin{align*}
+  V(x,y)&=(\cancelto{0}{A}e^{kx}+Be^{-kx})(C sin(ky) + D cos(ky))\\
+  &\text{ Por x} \to \infty, V \to 0\\
+  V(x,0)&=(Be^{-kx}) (\cancelto{0}{D}cos(ky)) = 0\\
+  V(x,b)&=Ce^{-kx}sin(kb) = 0 \to k=\frac{n*\pi}{b}\\
+  &\text{Esto nos da una lista de coeficientes de n:}\\
+  C_{n} &e^{-\frac{xn*\pi}{b}} sin(\frac{yn\pi}{b}) \text{ y }\\
+  V_o(y)&= \sum_{n=1}^{\infty} C_{n} e^{-\frac{xn*\pi}{b}} sin(\frac{yn\pi}{b})\\\\
+  &\text{Con el "Truco de Fourier" simplificamos la ecuación}\\
+  &\text{Usando la propiedad } \int_{0}^b  sin(\frac{yn\pi}{b}) sin(\frac{yn'\pi}{b})dy = \frac{b}{2}\\
+  \int_{0}^b&V_o(y)sin(\frac{yn\pi}{b})dy=\\
+  &=\sum_{n=1}^{\infty} C_{n} e^{-\frac{xn*\pi}{b}} \cancelto{\frac{b}{2}}{\int_{0}^b sin(\frac{yn\pi}{b}) sin(\frac{yn'\pi}{b})dy}\\
+  \int_{0}^b&V_o(y)sin(\frac{yn\pi}{b})dy=\frac{2}{b} \sum_{n=1}^{\infty} C_{n} e^{-\frac{xn*\pi}{b}}\\
+  &\text{Finalmente despejamos para \(C_n\)}\\
+  C_n &= \frac{2}{b} sin(\frac{n\pi y}{b}) \int_0^b \tanh(\frac{y}{a})\sin(\frac{n\pi y}{b}) dy\\
+  &\text{Reeplazamos en la ecuación original}\\
+  V(x,y)&=\sum_{n=1}^{\infty} \frac{2}{b} sin(\frac{n\pi y}{b}) \int_0^b \tanh(\frac{y}{a})\sin(\frac{n\pi y}{b}) dy\\
+\end{align*}
+
+\subsubsection{Solución numérica}
+
 Para configurar las condiciones iniciales en el código utilizamos
 \begin{lstlisting}
   T[:,-1] = np.arctan(y/y[-1])
@@ -221,15 +248,30 @@ Si el plano \(x=0\) se corre a \(x=-b\), y se tiene
 Para este inciso se necesitan dos condiciones de frontera distintas de cero y valores en el plano negativo.
 Gracias a que función de condicion de frontera es independiente de \(x\) simplemente duplicaremos el tamaño del
 espacio en ese eje, es decir las condiciones iniciales se presentarán en \(x=0, x=2b\).
-En el código las configuramos de esta forma
 
+\subsubsection{Solución analítica}
+
+\begin{align*}
+  &\text{Tomamos la ecuación original y aplicamos condiciones}\\
+  &V(\pm x,y) = 2y^3 + 5 \text{ Simetría en X, permite cambiar} \\
+  A &= B, e^{kx} + e^{-kx} = 2A*2cosh(kt)\\
+  V(x,y) &= cosh(kt)(C sin(ky) + D cos(ky)),\\
+  V(x,0) &= cosh(kt)(C sin(ky) + \cancelto{0}{D} cos(ky)) = 0\\
+  V(x,a) &= 0, k = \frac{n*pi}{a}\\
+  V(b,y) &= \sum_{n=1}^{\infty} C_n cosh(\frac{n\pi x}{a}) sin(\frac{n\pi x}{a}) = 2y^3 + 5\\
+  \\
+  &\text{Truco de Fourier}\\
+  C_n& cosh(\frac{n\pi b}{a}) = \frac{4V_o}{n\pi}, \text{si n es impar}\\
+  V(b,y) &= \frac{4V_o}{\pi}(2y^3 + 5) \sum_{n=1}^{\infty} \frac{1}{n} * \frac{cosh(\frac{n\pi x}{a})}{cosh(\frac{n\pi b}{a})} sin(\frac{n\pi y}{a})
+\end{align*}
+
+\subsubsection{Solución numérica}
+
+En el código las configuramos de esta forma
 \begin{lstlisting}
   T[:,-1] = 2*y**3+5
   T[:,0] = 2*y**3+5
 \end{lstlisting}
-
-Así como el ejercicio anterior, presentamos el mapa de calor y el campo eléctrico de la iteración \(n=20\) en la figura \ref{2y3-n20} seguido de 
-las iteraciones menores, densidad y condiciones iniciales (figura \ref{2y3-iterations}).
 
 \begin{figure}
   \centering
@@ -250,6 +292,10 @@ las iteraciones menores, densidad y condiciones iniciales (figura \ref{2y3-itera
   \label{2y3-iterations}
 \end{figure}
 
+Así como el ejercicio anterior, presentamos el mapa de calor y el campo eléctrico de la iteración \(n=20\) en la figura \ref{2y3-n20} seguido de 
+las iteraciones menores, densidad y condiciones iniciales (figura \ref{2y3-iterations}).
+
+
 /subsubsection{Problema de Laplace en 3D}
 
 Una tubería se extiende a lo largo del eje z
@@ -262,17 +308,36 @@ Para poder graficar correctamente este ejercicio, utilizaremos la misma función
 generar mapas de calor en 3D, pero en este caso agregaremos distintos nuevos para valores de z.
 
 Utilizando matplotlib, es facil agregar planos utilizando:
+\subsubsection{Solución analítica}
 
+Este es claramente un problema en 3D, y para eso actualizaremos la ecuación
+\begin{align*}
+  X(x) &= Ae^{sqrt(k^2+l^2)x} + Be^{sqrt(k^2+l^2)x}\\
+  Y(y) &= C sin(ky) + D cos(ky)\\
+  Z(z) &= E sin (lz) + F cos(lz)\\
+  \\
+  &\text{Todos los coeficientes de X son cero,}\\
+  &D = 0\\
+  &k = \frac{\pi n}{b}\\
+  &\text{Simplificando como antes obtenemos}\\
+  V &= xy^2 \sum_{n=1}^{\infty} \sum_{m=1}^{\infty} C_nm sin(\frac{n \pi}{a})sin(\frac{m x\pi}{b})\\
+  C &= \frac{4}{ab} \int_0^a \int_0^b xy^2 sin(\frac{n \pi}{a})sin(\frac{m x\pi}{b}) dydx
+\end{align*}
+
+
+\subsubsection{Solución numérica}
 \begin{lstlisting}
-  # agregamos alpha para poder ver todos los planos
+  # agregamos alpha para ver los planos
   ax.plot_surface(x,y,field[z]+z, alpha=0.3)
 \end{lstlisting}
 
 El otro cambio que debemos hacer es adaptar la función de relajación para funcionar en un campo 3D.
 Basta con agregar:
 \begin{lstlisting}
-  # La funcion se queda igual excepto por agregar terminos de K
-  field[i, j, k] = 1/6 * (field[i+1][j][k] ... field[i][j][k+1] + field[i][j][k-1])
+  # Agregamos otra dimension
+  field[i, j, k] = 1/6 * \
+  (field[i+1][j][k] ...  \
+  field[i][j][k+1] + field[i][j][k-1])
 \end{lstlisting}
 
 Finalmente iteramos la nueva función con los arreglos y obtenemos un excelente resultado mostrado en 
@@ -298,134 +363,86 @@ figura \ref{xy2-n20}, como siempre, las iteraciones menores a menor detalle en \
 
 \subsection{Ecuación de Laplace en coordenadas esféricas}
 
+Una esfera de radio R cuya densidad de carga superficial está dada por\\
 
+\begin{align*}
+  \sigma(\theta) &= -3/2cos(3\theta) \\
+  \Delta f&={\frac {1}{r}}{\frac {\partial ^{2}}{\partial r^{2}}}(rf)+{\frac {1}{r^{2}\sin \theta }}{\frac {\partial }{\partial \theta }}\left(\sin \theta {\frac {\partial f}{\partial \theta }}\right)+{\frac {1}{r^{2}\sin ^{2}\theta }}{\frac {\partial ^{2}f}{\partial \varphi ^{2}}}\\
+\end{align*}
 
-\section{Conclusion}
-The conclusion goes here.
+Solución 
+\begin{align*}
+  &\text{Condiciones de frontera}\\
+  \phi(r=0, \theta) &= \exists \quad \phi(r=R, \theta) = -3/2cos(3\theta)\\
+  r &= R: \theta_{dentro} = \theta{fuera} \quad V \to 0, \phi \to \infty 
+\end{align*}
 
+\section{Conclusión}
 
-
-
-
-% if have a single appendix:
-%\appendix[Proof of the Zonklar Equations]
-% or
-%\appendix  % for no appendix heading
-% do not use \section anymore after \appendix, only \section*
-% is possibly needed
-
-% use appendices with more than one appendix
-% then use \section to start each appendix
-% you must declare a \section before using any
-% \subsection or using \label (\appendices by itself
-% starts a section numbered zero.)
-%
-
+A pesar de que se requirere matemática y conocimentos relativamente avanzados,
+la Ecuación de Laplace se comporta intuitivamente y es facil de predecir.
 
 \appendices
-\section{Proof of the First Zonklar Equation}
-Appendix one text goes here.
+\section{Formas alternativas de calcular campos potenciales}
 
-% you can choose not to have a title for an appendix
-% if you want by leaving the argument blank
-\section{}
-Appendix two text goes here.
+\subsubsection{Relajación por Jacobi}
+
+La forma más común de calcular numericamente la ecuación de Laplace
+consta en escoger un "5 point stencil" o lienzo para 2D (o 7 para 3D).
+
+El proceso consiste en promediar el valor de los puntos alrededor para
+obtener un valor. El proceso es muy simple y converge en la solución 
+cuando las iteraciones tienen a infinito. 
+
+El único requerimiento es tener los valores de frontera. Esto funciona
+ya que Laplace no tiene máximos y se puede comprobar que
+\begin{align*}
+  V(x,y) = \frac{1}{2\pi R} \oint V dl
+\end{align*} 
+
+Y simplemente agreando dos puntos mas al lienzo se expande a 3D.
+
+\subsubsection{Matriz y eliminación Gauss}
+
+La limitante del metodo de Jacobi consta en que es un proceso iterativo
+secuencial, para poder acelerar el proceso se pueden aprovechar Hardware
+especializado en matrices como GPUs o FPGAs, pero esto requiere replantear
+el problema para utilizar matrices.
+
+Partiendo del método de jacobi, podemos desarrollar un patrón:
+
+\begin{align*}
+  4 a_{ij} &= a_{i+1j} + a_{i-1j} + a_{ij+1} + a_{ij-1}
+\end{align*}
+De esta forma definimos una matriz con el sistema de Ecuaciónes a resolver\\\\
+$\begin{pmatrix}
+  a & b & c & d\\ 
+  e & f & g & h
+\end{pmatrix}$ 
+\\
+Este metodo funciona porque no existe punto en la superficie que no tenga relación
+con sus vecinos, y los unicos que no tienen vecinos se encuentran en la frontera
+donde conocemos su valor.
 
 
-% use section* for acknowledgment
-\ifCLASSOPTIONcompsoc
-  % The Computer Society usually uses the plural form
-  \section*{Acknowledgments}
-\else
-  % regular IEEE prefers the singular form
-  \section*{Acknowledgment}
-\fi
-
-
-The authors would like to thank...
-
-
-% Can use something like this to put references on a page
-% by themselves when using endfloat and the captionsoff option.
-\ifCLASSOPTIONcaptionsoff
-  \newpage
-\fi
-
-
-
-% trigger a \newpage just before the given reference
-% number - used to balance the columns on the last page
-% adjust value as needed - may need to be readjusted if
-% the document is modified later
-%\IEEEtriggeratref{8}
-% The "triggered" command can be changed if desired:
-%\IEEEtriggercmd{\enlargethispage{-5in}}
-
-% references section
-
-% can use a bibliography generated by BibTeX as a .bbl file
-% BibTeX documentation can be easily obtained at:
-% http://mirror.ctan.org/biblio/bibtex/contrib/doc/
-% The IEEEtran BibTeX style support page is at:
-% http://www.michaelshell.org/tex/ieeetran/bibtex/
-%\bibliographystyle{IEEEtran}
-% argument is your BibTeX string definitions and bibliography database(s)
-%\bibliography{IEEEabrv,../bib/paper}
-%
-% <OR> manually copy in the resultant .bbl file
-% set second argument of \begin to the number of references
-% (used to reserve space for the reference number labels box)
 \begin{thebibliography}{1}
 
-\bibitem{IEEEhowto:kopka}
-H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
-  0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
+\bibitem{griffiths}
+David~J~Griffiths, 1999. Introduction~to~Electrodynamics;
 
+\bibitem{physicscomp}
+Scopatz,~Anthony, and Kathryn~D.~Huff. 2015. Effective~Computation~in~Physics. 1 edition. S.l.: O’Reilly Media;
+
+\bibitem{integer}
+George~L.~Nemhauser and Laurence~A.~Wolsey, Integer~programming (pp. 447–527);
 \end{thebibliography}
 
-% biography section
-% 
-% If you have an EPS/PDF photo (graphicx package needed) extra braces are
-% needed around the contents of the optional argument to biography to prevent
-% the LaTeX parser from getting confused when it sees the complicated
-% \includegraphics command within an optional argument. (You could create
-% your own custom macro containing the \includegraphics command to make things
-% simpler here.)
-%\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{mshell}}]{Michael Shell}
-% or if you just want to reserve a space for a photo:
 
-\begin{IEEEbiography}{Michael Shell}
-Biography text here.
-\end{IEEEbiography}
 
-% if you will not have a photo at all:
-\begin{IEEEbiographynophoto}{John Doe}
-Biography text here.
+
+\begin{IEEEbiographynophoto}{Juan Pablo Mora}
+Future Mechatronics Engineer, currently working as a software developer focusing on online banking.
 \end{IEEEbiographynophoto}
-
-% insert where needed to balance the two columns on the last page with
-% biographies
-%\newpage
-
-\begin{IEEEbiographynophoto}{Jane Doe}
-Biography text here.
-\end{IEEEbiographynophoto}
-
-% You can push biographies down or up by placing
-% a \vfill before or after them. The appropriate
-% use of \vfill depends on what kind of text is
-% on the last page and whether or not the columns
-% are being equalized.
-
-%\vfill
-
-% Can be used to pull up biographies so that the bottom of the last one
-% is flush with the other column.
-%\enlargethispage{-5in}
-
-
-
-% that's all folks
 \end{document}
 
 
